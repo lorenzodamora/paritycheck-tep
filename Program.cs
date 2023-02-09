@@ -12,24 +12,58 @@ namespace paritycheck
         {
             do
             {
-                int asc;
+                int[] asc = new int[7];
+                bool con = true;
                 do //controlli
                 {
-                    Console.Write("Inserisci un carattere: ");
-                    char car = Console.ReadKey().KeyChar;
-                    //calcola il codice ASCII
-                    asc = (int)car;
-                    Console.WriteLine($"\nIl codice decimale ASCII: {asc}");
-                    if (asc < 0 || asc > 255)
+                    Console.Clear();
+                    string str;
+                    Console.Write("Inserisci 7 caratteri:        |\b\b\b\b\b\b\b\b");
+                    //Console.Write(Console.CursorLeft); //23
+                    do
                     {
-                        Console.WriteLine("\t\t\t\tcarattere oltre 8 bit\npremi qualunque tasto per reinserire");
-                        Console.ReadKey();
-                        Console.Clear();
-                    }
-                    else break;
-                } while (true); // euro è fuori da 8 bit
+                        str = Console.ReadLine();
+                        if (str.Length != 7)
+                        {
+                            Console.SetCursorPosition(23, 2);
+                            Console.Write("non hai inserito 7 caratteri");
+                            //Console.Write(Console.CursorLeft); //51
+                            Console.SetCursorPosition(23, 1);
+                            Console.Write("1234567");
+                            Console.SetCursorPosition(23, 0);
+                            Console.Write(new string(' ', str.Length));
+                            Console.SetCursorPosition(23, 0);
+                            Console.Write("       |\b\b\b\b\b\b\b\b");
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(23, 1);
+                            Console.Write(new string(' ', 7) + "\n" + new string(' ', 51));
+                            break;
+                        }
+                    } while (true);
+                    //calcola il codice ASCII dei 7 caratteri
+                    for (int i = 0; i < 7; i++) asc[i] = (int)str[i];
+                    Console.SetCursorPosition(0, 2);
+                    Console.Write("Il codice decimale ASCII: ");
+                    foreach (int n in asc) Console.Write($"{n}|");
+
+                    //controlli
+                    for (int i = 0; i < 7; i++) if (asc[i] > 127)
+                        {
+                            Console.WriteLine($"\nil carattere {str[i]} è oltre 7 bit\npremi qualunque tasto per reinserire");
+                            i = 7;
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            con = false;
+                            break;
+                        }
+                    Console.ReadKey();
+                } while (con); /* // euro è fuori da 8 bit
                 //converto in binario ASCII
-                int[] bin = Binario(asc);
+                int[,] bin = Binario(asc);
                 //visualizzo
                 Console.Write("Il codice binario con bit di parità: ");
                 foreach (int b in bin) Console.Write(b);
@@ -42,18 +76,17 @@ namespace paritycheck
                 {
                     Console.Write("\b \b");
                     break;
-                }
+                } */
             } while (true);
-            Console.ReadKey();
         }
 
         //restituisce la conversione in binario del valore intero decimale
-        public static int[] Binario(int dec)
+        public static int[,] Binario(int dec)
         {
-            int[] bin = new int[7];
+            int[,] bin = new int[8,8];
             for (int i = 6; i >= 0; i--)
             {
-                bin[i] = dec % 2;
+                bin[i,i] = dec % 2;
                 dec /= 2;
             }
             //Array.Reverse(bin);
@@ -61,7 +94,7 @@ namespace paritycheck
         }
 
         //restituisce il bit di parità pari o dispari
-        public static int Parity(int[] bin)
+        public static int Parity(int[,] bin)
         {
             int s = 0;
             foreach (int b in bin) s += b;
