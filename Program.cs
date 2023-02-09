@@ -52,16 +52,19 @@ namespace paritycheck
                     for (int i = 0; i < 7; i++) if (asc[i] > 127)
                         {
                             Console.WriteLine($"\nil carattere {str[i]} è oltre 7 bit\npremi qualunque tasto per reinserire");
-                            i = 7;
                             Console.ReadKey();
+                            break;
                         }
                         else
                         {
                             con = false;
                             break;
                         }
-                    Console.ReadKey();
-                } while (con); /* // euro è fuori da 8 bit
+                } while (con); // euro è fuori da 8 bit
+                //converto in binario ASCII
+                int[,] bin = Binario(asc);
+
+                /*
                 //converto in binario ASCII
                 int[,] bin = Binario(asc);
                 //visualizzo
@@ -79,11 +82,12 @@ namespace paritycheck
                 } */
             } while (true);
         }
-
+        
         //restituisce la conversione in binario del valore intero decimale
-        public static int[,] Binario(int dec)
+        public static int[,] Binario(int[] dec)
         {
             int[,] bin = new int[8,8];
+
             for (int i = 6; i >= 0; i--)
             {
                 bin[i,i] = dec % 2;
